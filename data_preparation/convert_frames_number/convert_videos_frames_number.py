@@ -26,9 +26,9 @@ def cut_videos(input_path, output_path, word, video_id, row_index, num_of_frames
     
 
     # fill the rest of the frames with blank frame
-    if frame_number < num_of_frames:
+    if frame_number <= num_of_frames:
         blank_image = np.zeros((600, 600, 3), np.uint8)
-        blank_list = [blank_image] * (num_of_frames - frame_number)
+        blank_list = [blank_image] * (num_of_frames - frame_number +1)
         frames_list.extend(blank_list)
 
     # video writer
