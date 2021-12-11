@@ -34,9 +34,10 @@ def record_video(output_path, word, num_of_frames, mp_holistic_model, holistic_m
     video_id = len(os.listdir(output_path))
     
     # read the video frames and save it in a list
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     cap.set(3, 600)
     cap.set(4, 600)
+    cap.set(10, 50)
     success, frame = cap.read()
 
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -53,7 +54,7 @@ def record_video(output_path, word, num_of_frames, mp_holistic_model, holistic_m
         cv2.putText(image, current_status_string, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
         cv2.imshow(f"Rec: {word}", image)
         if key_input == ord('r'):
-            count = 5
+            count = 3
             while count > 0:
                 image = np.copy(no_text_image)
                 current_status_string = f"Start Recording in {count} seconds."
@@ -61,7 +62,7 @@ def record_video(output_path, word, num_of_frames, mp_holistic_model, holistic_m
                 count -= 1
                 cv2.imshow(f"Rec: {word}", image)
                 cv2.waitKey(1000)
-                
+
             # video writer
             out = cv2.VideoWriter(os.path.join(output_path, f'{video_id}.mp4'),
                                   cv2.VideoWriter_fourcc(*'DIVX'), 20, (width, height))
