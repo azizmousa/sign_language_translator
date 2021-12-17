@@ -40,33 +40,35 @@ def extract_keypoints(results):
 
 def create_word_folders(output_path, word, num_of_videos):
     print(f"create {word} directory.")
-    main_path = os.path.join(output_path, "keypoints", word)
+    main_path = os.path.join(output_path, "keypoints", word.lower().strip())
     os.makedirs(main_path, exist_ok=True)
     for i in range(num_of_videos):
         print(f"\tcreate video number ({i}) directory.")
         os.makedirs(os.path.join(main_path, str(i)), exist_ok=True)
 
 
-def create_np_keypoints_file(videos_path, videos_extention, output_path, mp_drawing, mp_holistic_model, word, videos_list, row_index, holistic_model, start_time):
+def create_np_keypoints_file(videos_path, output_path, mp_drawing, mp_holistic_model, word, videos_list, row_index, holistic_model, start_time):
     print(f"extracting the keypoints for ({word}) of index -> ({row_index}).")
 
     for i in range(len(videos_list)):
         print(f"\textracting the keypoints from video number ({i}) ...")
-        cap = cv2.VideoCapture(os.path.join(videos_path, f"{videos_list[i]}.{videos_extention}"))
+        cap = cv2.VideoCapture(os.path.join(videos_path, word,f"{videos_list[i]}"))
         success = success, frame = cap.read()
         frame_number = 1
         while cap.isOpened() and success:
-            frame = cv2.resize(frame, (600, 600))
-            image, results = detect_keypoints(frame, holistic_model)
-            draw_landmarks(mp_drawing, mp_holistic_model, image, results)
-    
-            keypoints = extract_keypoints(results)
             save_path = os.path.join(output_path, "keypoints", word, str(i), f"frame_{frame_number}")
-            np.savez_compressed(save_path, keypoints)
+            # print(os.path.join(videos_path, word,f"{videos_list[i]}"))
+            if not os.path.exists(save_path+".npz"):
+                frame = cv2.resize(frame, (600, 600))
+                image, results = detect_keypoints(frame, holistic_model)
+                draw_landmarks(mp_drawing, mp_holistic_model, image, results)
+        
+                keypoints = extract_keypoints(results)
+                np.savez_compressed(save_path, keypoints)
 
-            keypoints = None
-            del keypoints
-
+                keypoints = None
+                del keypoints
+                
             success, frame = cap.read()
             frame_number += 1
 
@@ -82,20 +84,19 @@ def main(argv):
     mp_drawing = mp.solutions.drawing_utils 
     holistic = mp_holistic_model.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
     
-    dataset = pd.read_csv("gloss_videos.csv")
-    dataset['videos_ids'] = dataset['videos_ids'].apply(literal_eval)
+    dataset = pd.read_csv("words_dataset.csv")
 
-    dataset.apply(lambda row: create_word_folders(".", row['gloss'], len(row['videos_ids'])), axis=1)
+    dataset.apply(lambda row: create_word_folders(argv[2], row['WORD'].lower().strip(), len(os.listdir(os.path.join(argv[1], row['WORD'].lower().strip())))), axis=1)
     start = datetime.datetime.now()
     
-    if len(argv) == 4:
-        dataset.apply(lambda row: create_np_keypoints_file(argv[1], argv[3], argv[2], mp_drawing, mp_holistic_model, 
-                            row['gloss'], row['videos_ids'], row.name, holistic, start), axis=1)
-    elif len(argv) == 3:
-        dataset.apply(lambda row: create_np_keypoints_file(argv[1], argv[2], ".", mp_drawing, mp_holistic_model, 
-                            row['gloss'], row['videos_ids'], row.name, holistic, start), axis=1)
-    elif len(argv) < 3:
-        print("you should enter the input path and the videos extention.")
+    if len(argv) == 3:
+        dataset.apply(lambda row: create_np_keypoints_file(argv[1], argv[2], mp_drawing, mp_holistic_model, 
+                            row['WORD'].lower().strip(), os.listdir(os.path.join(argv[1], row['WORD'].lower().strip())), row.name, holistic, start), axis=1)
+    elif len(argv) == 2:
+        dataset.apply(lambda row: create_np_keypoints_file(argv[1], ".", mp_drawing, mp_holistic_model, 
+                            row['WORD'].lower().strip(), os.listdir(os.path.join(argv[1], row['WORD'].lower().strip())), row.name, holistic, start), axis=1)
+    elif len(argv) < 2:
+        print("you should enter the input path.")
 
 
 if __name__ == "__main__":
