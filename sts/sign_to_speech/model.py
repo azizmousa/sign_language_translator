@@ -5,8 +5,8 @@ import mediapipe as mp
 from cv2 import cv2
 
 
-def read_labels():
-    with open(os.path.join('model', 'names'), 'r') as names_file:
+def read_labels(labels_path):
+    with open(labels_path, 'r') as names_file:
         lines = names_file.read()
     i = 0
     names_dict = {}
@@ -18,12 +18,13 @@ def read_labels():
 
 class Model:
 
-    def __init__(self, stream_source, sequence_length, display_keypoint=False, display_window=True):
-        actions_map = read_labels()
+    def __init__(self, stream_source, sequence_length, model_path, labels_path,
+                 display_keypoint=False, display_window=True):
+        actions_map = read_labels(labels_path)
 
         self.sequence_length = sequence_length
 
-        self.model = tf.keras.models.load_model(os.path.join('model', 'cv_model.h5'))
+        self.model = tf.keras.models.load_model(model_path)
 
         self.actions = list(actions_map.keys())
 
@@ -109,7 +110,7 @@ class Model:
             if self.display_keypoint:
                 display = image
             if self.display_window:
-                cv2.imshow(f"Rec", display)
+                cv2.imshow(f"Stream", display)
             key_input = cv2.waitKey(1)
             success, frame = cap.read()
 
