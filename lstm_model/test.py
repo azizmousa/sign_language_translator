@@ -5,11 +5,7 @@ from cv2 import KeyPoint, cv2
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Bidirectional, Dropout
-from tensorflow.keras.callbacks import TensorBoard
 import mediapipe as mp
-import sys
 import os
 
 
@@ -58,7 +54,7 @@ def extract_keypoints(results):
 
 
 
-def start_stream(mp_holistic_model, holistic_model, mp_drawing, model, actions):
+def start_stream(mp_holistic_model, holistic_model, mp_drawing, model, actions, sequence_length):
 
     sequence = []
     sentence = []
@@ -73,24 +69,21 @@ def start_stream(mp_holistic_model, holistic_model, mp_drawing, model, actions):
     success, frame = cap.read()
     res = []
     while success:    
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
         image, results = detect_keypoints(frame, holistic_model)
         draw_landmarks(mp_drawing, mp_holistic_model, image, results)
 
         KeyPoints = extract_keypoints(results)
 
         sequence.append(KeyPoints)
-        sequence = sequence[-40:]
+        sequence = sequence[-sequence_length:]
 
 
-        if len(sequence) == 40:
+        if len(sequence) == sequence_length:
             res = model.predict(np.expand_dims(sequence, axis=0))[0]
             predictions.append(np.argmax(res))
             # print(actions[np.argmax(res)])
 
-        if len(predictions)> 0 and np.unique(predictions[-20:])[0] == np.argmax(res):
+        if len(predictions)> 0 and np.unique(predictions[-15:])[0] == np.argmax(res):
             if res[np.argmax(res)] > threshold:
                 if len(sentence) > 0:
                     if actions[np.argmax(res)] != sentence[-1]:
@@ -98,14 +91,15 @@ def start_stream(mp_holistic_model, holistic_model, mp_drawing, model, actions):
                 else:
                     sentence.append(actions[np.argmax(res)])
         
-        print(sentence)
 
         cv2.imshow(f"Rec", image)
         key_input = cv2.waitKey(1)
         success, frame = cap.read()
+        
         if key_input == ord('q'):
             break
-            
+	
+        yield sentence
 
     cap.release()
     cv2.destroyAllWindows()    
@@ -115,16 +109,6 @@ def main(argv):
     actions_map, num_of_videos = read_labels('dataset')
     
     sequence_length = 40
-
-    sequences, labels = [], []
-    for action in actions_map.keys():
-        for sequence in range(num_of_videos[action]):
-            window = []
-            for frame_num in range(sequence_length):
-                frame = np.load(os.path.join("dataset", action, str(sequence),f"frame_{frame_num+1}.npz"))['arr_0']
-                window.append(frame)
-            sequences.append(window)
-            labels.append(actions_map[action])
     
     model = tf.keras.models.load_model('cv_model.h5')
     
@@ -135,7 +119,8 @@ def main(argv):
     holistic = mp_holistic_model.Holistic(min_detection_confidence=0.7, min_tracking_confidence=0.5)
     
 
-    start_stream(mp_holistic_model, holistic, mp_drawing, model, actions)
+    for sentence in start_stream(mp_holistic_model, holistic, mp_drawing, model, actions, sequence_length):
+        print(sentence)
     
     
             
