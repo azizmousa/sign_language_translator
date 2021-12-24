@@ -98,14 +98,6 @@ class Model:
                 res = self.model.predict(np.expand_dims(sequence, axis=0))[0]
                 predictions.append(np.argmax(res))
 
-            if len(predictions) > 0 and np.unique(predictions[-15:])[0] == np.argmax(res):
-                if res[np.argmax(res)] > threshold:
-                    if len(sentence) > 0:
-                        if self.actions[np.argmax(res)] != sentence[-1]:
-                            sentence.append(self.actions[np.argmax(res)])
-                    else:
-                        sentence.append(self.actions[np.argmax(res)])
-
             display = frame
             if self.display_keypoint:
                 display = image
@@ -117,7 +109,17 @@ class Model:
             if key_input == ord('q'):
                 break
 
-            yield sentence, display
+            if len(predictions) > 0 and np.unique(predictions[-15:])[0] == np.argmax(res):
+                if res[np.argmax(res)] > threshold:
+                    if len(sentence) > 0:
+                        if self.actions[np.argmax(res)] != sentence[-1]:
+                            sentence.append(self.actions[np.argmax(res)])
+                            yield sentence[-1], display
+                    else:
+                        sentence.append(self.actions[np.argmax(res)])
+                        yield sentence[-1], display
+
+            yield '', display
 
         cap.release()
         cv2.destroyAllWindows()
