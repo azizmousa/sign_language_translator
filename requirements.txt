@@ -1,2 +1,4 @@
 pyttsx3==2.90
 nltk==3.6.5
+SpeechRecognition==3.8.1
+PyAudio==0.2.11
