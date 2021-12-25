@@ -4,6 +4,7 @@ from sts.sign_to_speech import model_prepare
 from sts.sign_to_speech.model import Model
 from sts.sign_to_speech.speak import Speak
 
+
 class SignToSpeech:
 
     def __init__(self, source, sequence_length, model_path, names_path, display_keypoint=False, display_window=True):
@@ -24,7 +25,7 @@ class SignToSpeech:
     def sentence_listener(self):
         while len(self.__sentence_queue) > 0:
             print(self.__sentence_queue[0])
-            # self.__speak.speak(self.__sentence_queue[0])
+            self.__speak.speak(self.__sentence_queue[0])
             del self.__sentence_queue[0]
 
     def start_pipeline(self):
