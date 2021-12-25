@@ -1,4 +1,5 @@
 import os
+import threading
 from sts.sign_to_speech import model_prepare
 from sts.sign_to_speech.model import Model
 
@@ -16,16 +17,28 @@ class SignToSpeech:
             model_prepare.download_file(names_url, names_path)
         self.__model = Model(source, sequence_length, model_path, names_path, display_keypoint, display_window)
         self.__sentence_queue = []
+        self.__listen = True
+        self.__listener_thread = threading.Thread(target=self.sentence_listener)
+
+    def sentence_listener(self):
+        while len(self.__sentence_queue) > 0:
+            print(self.__sentence_queue[0])
+            del self.__sentence_queue[0]
 
     def start_pipeline(self):
         words = []
+
         for word, frame in self.__model.start_stream():
             if word != "":
                 if word == 'na':
                     self.__sentence_queue.append(' '.join(words))
                     words = []
+                    if not self.__listener_thread.is_alive():
+                        del self.__listener_thread
+                        self.__listener_thread = threading.Thread(target=self.sentence_listener)
+                        self.__listener_thread.start()
                 else:
                     words.append(word)
-
+        self.__listen = False
 
 
