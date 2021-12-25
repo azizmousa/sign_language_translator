@@ -1,6 +1,8 @@
 
 import cv2
-
+from os import listdir
+from os.path import isfile , join
+import pandas as pd 
 
 class SignOut:
     def __init__(self,path):
@@ -9,6 +11,21 @@ class SignOut:
         self.flag = True
         self.speed = 20
         self.path = path
+        
+        files = [f for f in listdir(self.path) if isfile(join(self.path , f))]
+        self.files_df = pd.DataFrame(files , columns=['path'])
+        self.files_df['file_name'] = [file.split('.')[0] for file in files]
+        self.files_df['full_path'] = [join(self.path , file).replace('\\' , '/') for file in files]
+
+    def getPath(self , name):
+        try :
+            path = self.files_df[self.files_df['file_name'] == name]['full_path'].values[0]
+            
+        except:
+            path = None
+            print('no file named' + name)
+        return path
+
 
     def preprocess(self , phrase):
         return phrase.split(' ')
@@ -33,13 +50,13 @@ class SignOut:
 
     def show_sign(self , phrase):
         words  = self.preprocess(phrase)
-        videos = [self.path+'/'+word+'.mp4' for word in words]
+        videos = [self.getPath(word) for word in words]
         self.caps   = [cv2.VideoCapture(video) for video in videos]
         self.display()
 
     def setSpeed(self , speed):
         self.speed = speed
 
-# so = SignOut('videos')
-# so.setSpeed(5)
-# so.show_sign('I love egypt')
+so = SignOut('videos')
+so.setSpeed(5)
+so.show_sign('my love')
