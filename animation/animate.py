@@ -50,7 +50,7 @@ class SignOut:
 
     def show_sign(self , phrase):
         words  = self.preprocess(phrase)
-        videos = [self.getPath(word) for word in words]
+        videos = [self.getPath(word.lower()) for word in words]
         self.caps   = [cv2.VideoCapture(video) for video in videos]
         self.display()
 
@@ -59,4 +59,4 @@ class SignOut:
 
 # so = SignOut('videos')
 # so.setSpeed(5)
-# so.show_sign('i love egypt')
+# so.show_sign('I love Egypt')
