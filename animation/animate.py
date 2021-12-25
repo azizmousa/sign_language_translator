@@ -57,6 +57,6 @@ class SignOut:
     def setSpeed(self , speed):
         self.speed = speed
 
-so = SignOut('videos')
-so.setSpeed(5)
-so.show_sign('my love')
+# so = SignOut('videos')
+# so.setSpeed(5)
+# so.show_sign('i love egypt')
