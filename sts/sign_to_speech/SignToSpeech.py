@@ -2,7 +2,7 @@ import os
 import threading
 from sts.sign_to_speech import model_prepare
 from sts.sign_to_speech.model import Model
-
+from sts.sign_to_speech.speak import Speak
 
 class SignToSpeech:
 
@@ -13,16 +13,18 @@ class SignToSpeech:
             model_url = 'https://drive.google.com/u/0/uc?id=1cd3aCeG618_O8N4MvAFJfHXrXiX-Udny&export=download'
             model_prepare.download_file(model_url, model_path)
             print('Downloading names file.')
-            names_url = 'https://drive.google.com/u/0/uc?id=1vDyKqqZpQ3_zzK0T26leeZFnSSqUl-Y5&export=download'
+            names_url = 'https://drive.google.com/u/0/uc?id=1OKafl9zFwYPCJfUr_W0wESbkvrZCgFRY&export=download'
             model_prepare.download_file(names_url, names_path)
         self.__model = Model(source, sequence_length, model_path, names_path, display_keypoint, display_window)
         self.__sentence_queue = []
         self.__listen = True
         self.__listener_thread = threading.Thread(target=self.sentence_listener)
+        self.__speak = Speak()
 
     def sentence_listener(self):
         while len(self.__sentence_queue) > 0:
             print(self.__sentence_queue[0])
+            # self.__speak.speak(self.__sentence_queue[0])
             del self.__sentence_queue[0]
 
     def start_pipeline(self):
