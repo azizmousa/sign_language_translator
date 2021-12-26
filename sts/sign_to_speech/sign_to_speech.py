@@ -3,6 +3,7 @@ import threading
 from sts.sign_to_speech import model_prepare
 from sts.sign_to_speech.model import Model
 from sts.sign_to_speech.speak import Speak
+from sts.sign_to_speech.parser import Parser
 
 
 class SignToSpeech:
@@ -21,11 +22,15 @@ class SignToSpeech:
         self.__listen = True
         self.__listener_thread = threading.Thread(target=self.sentence_listener)
         self.__speak = Speak()
+        self.__parser = Parser()
 
     def sentence_listener(self):
         while len(self.__sentence_queue) > 0:
-            print(self.__sentence_queue[0])
-            self.__speak.speak(self.__sentence_queue[0])
+            sentence = self.__parser.parse(self.__sentence_queue[0])
+            # sentence = self.__sentence_queue[0]
+            print('sentence:', self.__sentence_queue[0])
+            print('parsed:', sentence)
+            self.__speak.speak(sentence)
             del self.__sentence_queue[0]
 
     def start_pipeline(self):
