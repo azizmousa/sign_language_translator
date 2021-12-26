@@ -19,9 +19,12 @@ class Parser:
         Args:
             text (str): string of some english words
 
-        Returns: dictionary of the right english statement
+        Returns:
+            string: text of the right english statement
 
         """
-        tmp_text = "gec: " + text
-        result = self.__happy_tt.generate_text(tmp_text, args=self.__settings)
-        return result.text
+        if text != "":
+            tmp_text = "gec: " + text
+            result = self.__happy_tt.generate_text(tmp_text, args=self.__settings)
+            return result.text
+        return ""
