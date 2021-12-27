@@ -21,6 +21,9 @@ class SignToSpeech:
 
         __parser (Parser): parser object to construct the right sentence
 
+        __display_window (bool, optional):
+            True if you want the class to display the output window
+            False otherwise
 
     """
 
@@ -38,6 +41,7 @@ class SignToSpeech:
         self.__listener_thread = threading.Thread(target=self.sentence_listener)
         self.__speak = Speak()
         self.__parser = Parser()
+        self.__display_window = display_window
 
     def sentence_listener(self):
         """
@@ -59,7 +63,9 @@ class SignToSpeech:
         this function start the whole pipeline to convert the sign language to spoken language.
 
         Returns:
-            None
+                word (string): the predicted word.
+                frame (2d-np_array): the frame that return from the stream.
+
         """
         words = []
         for word, frame in self.__model.start_stream():
@@ -73,3 +79,4 @@ class SignToSpeech:
                         self.__listener_thread.start()
                 else:
                     words.append(word)
+            yield word, frame
