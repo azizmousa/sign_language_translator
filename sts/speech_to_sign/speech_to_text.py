@@ -19,6 +19,15 @@ class SpeechToText:
                              "into", "these"]
 
     def lemmatize(self, text):
+        """Get the lemmatized version of an input text
+
+        Args:
+            text (str): The extracted text from the recorded audio
+
+        Returns:
+            list: a list of strings represents the text after lemmatization
+        """
+
         try:
             text_said = text['alternative'][0]['transcript']
             text_tokenized = word_tokenize(text_said)
