@@ -91,15 +91,14 @@ class Model:
 
     def draw_landmarks(self, image, results):
         """
-        def draw_landmarks(self, image, results)
-
         function to draw the landmarks on the input image
 
         Args:
             image: input image that you want to draw the landmarks on
             results: the landmarks that you want to draw
 
-        Returns: None
+        Returns:
+            None
 
         """
         self.__mp_drawing.draw_landmarks(image, results.face_landmarks, self.__mp_holistic_model.FACEMESH_CONTOURS,
@@ -117,14 +116,13 @@ class Model:
 
     def extract_keypoints(self, results):
         """
-        def extract_keypoints(self, results)
-
         function to extrack the keypoints from the landmarks
 
         Args:
             results: object that contains the keypoints
 
-        Returns: np-array that contain all keypoints sequentially
+        Returns:
+            np-array that contain all keypoints sequentially
 
         """
         face_landmarks = np.array([[lm.x, lm.y, lm.z] for lm in
@@ -143,11 +141,10 @@ class Model:
 
     def start_stream(self):
         """
-        def start_stream(self)
-
         function to start the source input and predict the sign language from the source
 
-        Returns: generator of the predicted words
+        Returns:
+            generator of the predicted words
 
         """
         sequence = []
