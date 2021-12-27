@@ -30,30 +30,50 @@ class Model:
     """
     Model class is a class to start continuous stream from the input source and classify the motions of
     sign language to words
+
+    Attributes:
+        sequence_length (int): the length of the sequence that the model already trained on
+
+        __model (keras_model): the model that will predict the signs
+
+        __actions (list): list of labels
+
+        __mp_holistic_model (object): object that control the holistic model
+
+        __mp_drawing (object): object to control the drawing utils
+
+        __holistic (object): the holistic model to detect the landmarks
+
+        __stream_source (int/str): the input source i.e. (camera/video)
+
+        __display_keypoint (bool): True if you want to display landmarks on the output image
+                                False otherwise
+
+        __display_window (bool): True if you want the class to display the output window
+                              False otherwise
+
     """
 
     def __init__(self, stream_source, sequence_length, model_path, labels_path,
                  display_keypoint=False, display_window=True):
         actions_map = read_labels(labels_path)
 
-        self.sequence_length = sequence_length
+        self.__sequence_length = sequence_length
 
-        self.model = tf.keras.models.load_model(model_path)
+        self.__model = tf.keras.models.load_model(model_path)
 
-        self.actions = list(actions_map.keys())
+        self.__actions = list(actions_map.keys())
 
-        self.mp_holistic_model = mp.solutions.holistic
-        self.mp_drawing = mp.solutions.drawing_utils
-        self.holistic = self.mp_holistic_model.Holistic(min_detection_confidence=0.7, min_tracking_confidence=0.5)
-        self.stream_source = stream_source
+        self.__mp_holistic_model = mp.solutions.holistic
+        self.__mp_drawing = mp.solutions.drawing_utils
+        self.__holistic = self.__mp_holistic_model.Holistic(min_detection_confidence=0.7, min_tracking_confidence=0.5)
+        self.__stream_source = stream_source
 
-        self.display_keypoint = display_keypoint
-        self.display_window = display_window
+        self.__display_keypoint = display_keypoint
+        self.__display_window = display_window
 
     def detect_keypoints(self, image):
         """
-        def detect_keypoints(self, image):
-
         detect the keypoints from an input image
 
         Args:
@@ -65,7 +85,7 @@ class Model:
 
         """
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        results = self.holistic.process(image)
+        results = self.__holistic.process(image)
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         return image, results
 
@@ -82,18 +102,18 @@ class Model:
         Returns: None
 
         """
-        self.mp_drawing.draw_landmarks(image, results.face_landmarks, self.mp_holistic_model.FACEMESH_CONTOURS,
-                                       self.mp_drawing.DrawingSpec(color=(10, 194, 80), thickness=1, circle_radius=1),
-                                       self.mp_drawing.DrawingSpec(color=(214, 200, 80), thickness=1, circle_radius=1))
-        self.mp_drawing.draw_landmarks(image, results.pose_landmarks, self.mp_holistic_model.POSE_CONNECTIONS,
-                                       self.mp_drawing.DrawingSpec(color=(90, 194, 80), thickness=2, circle_radius=4),
-                                       self.mp_drawing.DrawingSpec(color=(230, 200, 80), thickness=2, circle_radius=4))
-        self.mp_drawing.draw_landmarks(image, results.right_hand_landmarks, self.mp_holistic_model.HAND_CONNECTIONS,
-                                       self.mp_drawing.DrawingSpec(color=(20, 194, 80), thickness=2, circle_radius=4),
-                                       self.mp_drawing.DrawingSpec(color=(190, 200, 80), thickness=2, circle_radius=4))
-        self.mp_drawing.draw_landmarks(image, results.left_hand_landmarks, self.mp_holistic_model.HAND_CONNECTIONS,
-                                       self.mp_drawing.DrawingSpec(color=(20, 194, 80), thickness=2, circle_radius=4),
-                                       self.mp_drawing.DrawingSpec(color=(190, 200, 80), thickness=2, circle_radius=4))
+        self.__mp_drawing.draw_landmarks(image, results.face_landmarks, self.__mp_holistic_model.FACEMESH_CONTOURS,
+                                         self.__mp_drawing.DrawingSpec(color=(10, 194, 80), thickness=1, circle_radius=1),
+                                         self.__mp_drawing.DrawingSpec(color=(214, 200, 80), thickness=1, circle_radius=1))
+        self.__mp_drawing.draw_landmarks(image, results.pose_landmarks, self.__mp_holistic_model.POSE_CONNECTIONS,
+                                         self.__mp_drawing.DrawingSpec(color=(90, 194, 80), thickness=2, circle_radius=4),
+                                         self.__mp_drawing.DrawingSpec(color=(230, 200, 80), thickness=2, circle_radius=4))
+        self.__mp_drawing.draw_landmarks(image, results.right_hand_landmarks, self.__mp_holistic_model.HAND_CONNECTIONS,
+                                         self.__mp_drawing.DrawingSpec(color=(20, 194, 80), thickness=2, circle_radius=4),
+                                         self.__mp_drawing.DrawingSpec(color=(190, 200, 80), thickness=2, circle_radius=4))
+        self.__mp_drawing.draw_landmarks(image, results.left_hand_landmarks, self.__mp_holistic_model.HAND_CONNECTIONS,
+                                         self.__mp_drawing.DrawingSpec(color=(20, 194, 80), thickness=2, circle_radius=4),
+                                         self.__mp_drawing.DrawingSpec(color=(190, 200, 80), thickness=2, circle_radius=4))
 
     def extract_keypoints(self, results):
         """
@@ -136,7 +156,7 @@ class Model:
         threshold = 0.75
 
         # read the video frames and save it in a list
-        cap = cv2.VideoCapture(self.stream_source)
+        cap = cv2.VideoCapture(self.__stream_source)
         cap.set(3, 600)
         cap.set(4, 600)
         cap.set(10, 0)
@@ -149,16 +169,16 @@ class Model:
             KeyPoints = self.extract_keypoints(results)
 
             sequence.append(KeyPoints)
-            sequence = sequence[-self.sequence_length:]
+            sequence = sequence[-self.__sequence_length:]
 
-            if len(sequence) == self.sequence_length:
-                res = self.model.predict(np.expand_dims(sequence, axis=0))[0]
+            if len(sequence) == self.__sequence_length:
+                res = self.__model.predict(np.expand_dims(sequence, axis=0))[0]
                 predictions.append(np.argmax(res))
 
             display = frame
-            if self.display_keypoint:
+            if self.__display_keypoint:
                 display = image
-            if self.display_window:
+            if self.__display_window:
                 cv2.imshow(f"Stream", display)
             key_input = cv2.waitKey(1)
             success, frame = cap.read()
@@ -169,11 +189,11 @@ class Model:
             if len(predictions) > 0 and np.unique(predictions[-15:])[0] == np.argmax(res):
                 if res[np.argmax(res)] > threshold:
                     if len(sentence) > 0:
-                        if self.actions[np.argmax(res)] != sentence[-1]:
-                            sentence.append(self.actions[np.argmax(res)])
+                        if self.__actions[np.argmax(res)] != sentence[-1]:
+                            sentence.append(self.__actions[np.argmax(res)])
                             yield sentence[-1], display
                     else:
-                        sentence.append(self.actions[np.argmax(res)])
+                        sentence.append(self.__actions[np.argmax(res)])
                         yield sentence[-1], display
 
             yield '', display
