@@ -8,5 +8,5 @@ settings = TTSettings(do_sample=True, top_k=10, temperature=0.5,  min_length=1, 
 
 def parsing(text):
     tmp_text = "gec: " + text
-    result = happy_tt.generate_text(text, args=settings)
+    result = happy_tt.generate_text(tmp_text, args=settings)
     return result.text
