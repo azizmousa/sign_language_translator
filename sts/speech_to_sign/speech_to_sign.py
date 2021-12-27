@@ -11,6 +11,12 @@ class SpeechToSign:
         self.__stt = SpeechToText()
 
     def start_pipeline(self):
+        """Runs the complete pipeline of audio conversion to lemmatized text
+
+        Output:
+            list: A list of strings representing the lemmatized text
+        """
+
         while True:
             try:
                 file_name = glob.glob("output*")
