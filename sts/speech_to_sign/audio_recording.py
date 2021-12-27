@@ -13,10 +13,10 @@ class RecordingThread(object):
         thread.start()
 
     def run(self):
-        """Record an audio file
+        """Recording audio files
 
-        Returns:
-            Writes .wav record files
+        Output:
+            Writes .wav record files into the system
         """
 
         while True:
@@ -25,7 +25,7 @@ class RecordingThread(object):
             FORMAT = pyaudio.paInt16
             CHANNELS = 2
             RATE = 44100
-            RECORD_SECONDS = 5
+            RECORD_SECONDS = 10
             WAVE_OUTPUT_FILENAME = 'output' + str(self.__count) + '.wav'
 
             p = pyaudio.PyAudio()
