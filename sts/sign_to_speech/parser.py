@@ -5,6 +5,10 @@ from happytransformer import TTSettings
 class Parser:
     """
     Parser class convert some words to a right english statement
+
+    Attributes:
+        __happy_tt (object): happyTextToText object to correct the grammar
+        __settings (object): text generator settings object
     """
     def __init__(self):
         self.__happy_tt = HappyTextToText("T5",  "prithivida/grammar_error_correcter_v1")
@@ -12,8 +16,6 @@ class Parser:
 
     def parse(self, text):
         """
-        def parse(self, text)
-
         convert the input text to right english statement
 
         Args:
