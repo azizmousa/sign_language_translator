@@ -40,7 +40,7 @@ class RecordingThread(object):
             WAVE_OUTPUT_FILENAME = 'output.wav'
             
 			
-			recording = sd.rec(int(RECORD_DURATION * RATE),samplerate=RATE, channels=2)
+	    recording = sd.rec(int(RECORD_DURATION * RATE),samplerate=RATE, channels=2)
             sd.wait()
             queue.append(recording)
             wv.write(WAVE_OUTPUT_FILENAME,queue[0], RATE, sampwidth=2)
