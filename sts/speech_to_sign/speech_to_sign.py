@@ -34,7 +34,8 @@ class SpeechToSign:
                     print(f'spoken:({sentence})')
                     if sentence != '':
                         self.__sentence_queue.append(sentence)
-                        self.sentence_listener()
+                        for frame in self.sentence_listener():
+                            yield frame
 
                     os.remove(file_name[0])
                 # else:
@@ -46,14 +47,14 @@ class SpeechToSign:
 
     def sentence_listener(self):
         """
-
-
+            function to listen to the sentence queue and fire up the signs when there is sentences available.
         Returns:
             None
 
         """
         while len(self.__sentence_queue) > 0:
-            self.__animator.show_sign(self.__sentence_queue[0])
+            for frame in self.__animator.show_sign(self.__sentence_queue[0]):
+                yield frame
             del self.__sentence_queue[0]
 
     def stop_pipline(self):

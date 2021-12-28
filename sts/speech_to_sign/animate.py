@@ -51,13 +51,10 @@ class Animate:
             ret, frame = video_cap.read()
             while ret:
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                cv2.imshow('frame', gray)
                 cv2.waitKey(self.speed)
                 ret, frame = video_cap.read()
-
+                yield gray
             video_cap.release()
-        cv2.waitKey(1000)
-        cv2.destroyAllWindows()
         self.caps = []
 
     def show_sign(self, phrase):
@@ -66,8 +63,8 @@ class Animate:
         Args:
             phrase (str): The predicted sentence
 
-        Output:
-            Sign videos display
+        Returns:
+            Sign videos frames
         """
 
         self.flag = True
@@ -78,7 +75,8 @@ class Animate:
                   if self.files_df['file_name'].str.contains(word.lower()).sum() > 0]  # list of video paths
         print('videos:', videos)
         self.caps = [cv2.VideoCapture(video) for video in videos]
-        self.display()
+        for frame in self.display():
+            yield frame
 
     def set_speed(self, speed):
         """Controls the speed of videos
