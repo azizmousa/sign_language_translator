@@ -1,4 +1,3 @@
-import wavio as wv
 import sounddevice as sd
 import threading
 import time
@@ -11,6 +10,7 @@ class RecordingThread(object):
         thread = threading.Thread(target=self.run, args=())
         thread.daemon = True
         self.__loop = True
+        self.__audio_queue = []
         thread.start()
 
     def run(self):
@@ -21,14 +21,22 @@ class RecordingThread(object):
 
         while self.__loop:
             self.__count = self.__count + 1
-            RATE = 44100
-            RECORD_DURATION = 6
+            rate = 44100
+            duration = 6
             # CHUNK = 1024
-            WAVE_OUTPUT_FILENAME = 'output' + str(self.__count) + '.wav'
-            recording = sd.rec(int(RECORD_DURATION * RATE),samplerate=RATE, channels=2)
+            # WAVE_OUTPUT_FILENAME = 'output' + str(self.__count) + '.wav'
+            recording = sd.rec(int(duration * rate), samplerate=rate, channels=2)
             sd.wait()
-            wv.write(WAVE_OUTPUT_FILENAME, recording, RATE, sampwidth=2)
+            self.__audio_queue.append(recording)
             time.sleep(self.interval)
 
     def stop(self):
         self.__loop = False
+
+    def get_current_audio(self):
+        # print(self.__audio_queue)
+        if len(self.__audio_queue) > 0:
+            ca = self.__audio_queue[0]
+            del self.__audio_queue[0]
+            return ca
+        return None
