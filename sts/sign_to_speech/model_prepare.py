@@ -5,12 +5,13 @@ import requests
 def download_file(url, path):
     """
     def download_model(model_url)
-    download pretrained h5 model file
+    download pretrained h5 __model file
     Args:
-        url (str): model download url
+        url (str): __model download url
         path (str): download path
-    Returns: True if download succeed
-            False otherwise
+    Returns:
+        True if download succeed
+        False otherwise
     """
     try:
         request = requests.get(url, allow_redirects=True)
