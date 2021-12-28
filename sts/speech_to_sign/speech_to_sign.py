@@ -1,5 +1,4 @@
-import glob
-import os
+import wavio as wv
 from sts.speech_to_sign.audio_recording import RecordingThread
 from sts.speech_to_sign.speech_to_text import SpeechToText
 from sts.speech_to_sign.animate import Animate
@@ -24,10 +23,13 @@ class SpeechToSign:
 
         while self.__loop:
             try:
-                file_name = glob.glob("output*")
-                if len(file_name) != 0:
+                audio_file = self.__rth.get_current_audio()
+
+                if audio_file is not None:
                     # Converting a single recorded audio file into text
-                    text = self.__stt.convert_recorded_audio(file_name[0])
+                    rate = 44100
+                    wv.write('tmp.mp3', audio_file, rate, sampwidth=2)
+                    text = self.__stt.convert_recorded_audio('tmp.mp3')
                     lemmatized_text = self.__stt.lemmatize(text)
                     # print(lemmatized_text)
                     sentence = ' '.join(lemmatized_text)
@@ -37,7 +39,7 @@ class SpeechToSign:
                         for frame in self.sentence_listener():
                             yield frame
 
-                    os.remove(file_name[0])
+                    # os.remove(file_name[0])
                 # else:
                 #     continue
             except ValueError:
