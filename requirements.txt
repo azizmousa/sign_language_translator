@@ -6,6 +6,7 @@ async-timeout==4.0.2
 attrs==21.2.0
 cachetools==4.2.4
 certifi==2021.10.8
+cffi==1.15.0
 charset-normalizer==2.0.9
 click==8.0.3
 cycler==0.11.0
@@ -51,7 +52,7 @@ protobuf==3.19.1
 pyarrow==6.0.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-PyAudio==0.2.11
+pycparser==2.21
 pyparsing==3.0.6
 python-dateutil==2.8.2
 pytz==2021.3
@@ -65,6 +66,7 @@ sentencepiece==0.1.96
 setuptools-scm==6.3.2
 simplejson==3.17.6
 six==1.16.0
+sounddevice==0.4.3
 SpeechRecognition==3.8.1
 tensorboard==2.7.0
 tensorboard-data-server==0.6.1
@@ -80,6 +82,7 @@ tqdm==4.62.3
 transformers==4.15.0
 typing-extensions==4.0.1
 urllib3==1.26.7
+wavio==0.0.4
 Werkzeug==2.0.2
 wrapt==1.13.3
 xxhash==2.0.2
