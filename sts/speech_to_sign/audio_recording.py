@@ -1,7 +1,7 @@
-import pyaudio
-import wave
-import time
+import wavio as wv
+import sounddevice as sd
 import threading
+import time
 
 
 class RecordingThread(object):
@@ -10,48 +10,25 @@ class RecordingThread(object):
         self.__count = 0
         thread = threading.Thread(target=self.run, args=())
         thread.daemon = True
+        self.__loop = True
         thread.start()
 
     def run(self):
-        """Recording audio files
-
-        Output:
-            Writes .wav record files into the system
+        """Record an audio file
+        Returns:
+            Writes .wav record files
         """
 
-        while True:
+        while self.__loop:
             self.__count = self.__count + 1
-            CHUNK = 1024
-            FORMAT = pyaudio.paInt16
-            CHANNELS = 2
             RATE = 44100
-            RECORD_SECONDS = 9
+            RECORD_DURATION = 6
+            # CHUNK = 1024
             WAVE_OUTPUT_FILENAME = 'output' + str(self.__count) + '.wav'
-
-            p = pyaudio.PyAudio()
-
-            stream = p.open(format=FORMAT,
-                            channels=CHANNELS,
-                            rate=RATE,
-                            input=True,
-                            frames_per_buffer=CHUNK)
-
-            frames = []
-
-            for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-                data = stream.read(CHUNK)
-                frames.append(data)
-
-            stream.stop_stream()
-            stream.close()
-            p.terminate()
-
-            wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(p.get_sample_size(FORMAT))
-            wf.setframerate(RATE)
-            wf.writeframes(b''.join(frames))
-            wf.close()
-
+            recording = sd.rec(int(RECORD_DURATION * RATE),samplerate=RATE, channels=2)
+            sd.wait()
+            wv.write(WAVE_OUTPUT_FILENAME, recording, RATE, sampwidth=2)
             time.sleep(self.interval)
 
+    def stop(self):
+        self.__loop = False
