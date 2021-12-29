@@ -28,13 +28,13 @@ class SignToSpeech:
     """
 
     def __init__(self, source, sequence_length, model_path, names_path, display_keypoint=False, display_window=True):
-        model_exist = os.path.exists(os.path.join('model', 'cv_model.h5'))
+        model_exist = os.path.exists(model_path)
         if not model_exist:
             print('Downloading the __model.')
-            model_url = 'https://drive.google.com/u/0/uc?id=1cd3aCeG618_O8N4MvAFJfHXrXiX-Udny&export=download'
+            model_url = 'https://drive.google.com/u/0/uc?id=1LkQWfCo4T9uAZAykKvkVs8bKub6b96LC&export=download'
             model_prepare.download_file(model_url, model_path)
             print('Downloading names file.')
-            names_url = 'https://drive.google.com/u/0/uc?id=1OKafl9zFwYPCJfUr_W0wESbkvrZCgFRY&export=download'
+            names_url = 'https://drive.google.com/u/0/uc?id=1VmT3F9X9E_kavPKheSk4q5QZjyS9bgNn&export=download'
             model_prepare.download_file(names_url, names_path)
         self.__model = Model(source, sequence_length, model_path, names_path, display_keypoint, display_window)
         self.__sentence_queue = []
@@ -69,6 +69,7 @@ class SignToSpeech:
         """
         words = []
         for word, frame in self.__model.start_stream():
+            # print(word)
             if word != "":
                 if word == 'na':
                     self.__sentence_queue.append(' '.join(words))
