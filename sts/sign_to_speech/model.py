@@ -125,9 +125,9 @@ class Model:
             np-array that contain all keypoints sequentially
 
         """
-        face_landmarks = np.array([[lm.x, lm.y, lm.z] for lm in
-                                   results.face_landmarks.landmark]).flatten() \
-            if results.face_landmarks else np.zeros(468 * 3)
+        # face_landmarks = np.array([[lm.x, lm.y, lm.z] for lm in
+        #                            results.face_landmarks.landmark]).flatten() \
+        #     if results.face_landmarks else np.zeros(468 * 3)
         pose_landmarks = np.array([[lm.x, lm.y, lm.z, lm.visibility] for lm in
                                    results.pose_landmarks.landmark]).flatten() \
             if results.pose_landmarks else np.zeros(33 * 4)
@@ -137,7 +137,7 @@ class Model:
         left_hand_landmarks = np.array([[lm.x, lm.y, lm.z] for lm in
                                         results.left_hand_landmarks.landmark]).flatten() \
             if results.left_hand_landmarks else np.zeros(21 * 3)
-        return np.concatenate([pose_landmarks, face_landmarks, left_hand_landmarks, right_hand_landmarks])
+        return np.concatenate([pose_landmarks, left_hand_landmarks, right_hand_landmarks])
 
     def start_stream(self):
         """
@@ -183,7 +183,7 @@ class Model:
             if key_input == ord('q'):
                 break
 
-            if len(predictions) > 0 and np.unique(predictions[-15:])[0] == np.argmax(res):
+            if len(predictions) > 0 and np.unique(predictions[-18:])[0] == np.argmax(res):
                 if res[np.argmax(res)] > threshold:
                     if len(sentence) > 0:
                         if self.__actions[np.argmax(res)] != sentence[-1]:
