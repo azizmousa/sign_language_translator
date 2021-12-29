@@ -77,4 +77,4 @@ for frame in sts.start_pipeline():
 - Ahmed Tarek Mansour Al Ashry
 
 # Licence
-[MIT Licence](https://choosealicense.com/licenses/mit/)
+[MIT Licence](https://github.com/azizmousa/sign_language_translator/blob/master/LICENCE)
