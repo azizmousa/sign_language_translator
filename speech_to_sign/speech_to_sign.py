@@ -13,8 +13,9 @@ class SpeechToSign:
     def start_pipeline(self):
         while True:
             try:
-                file_name = glob.glob("output*")
-                if len(file_name) != 0:
+                file_name = 'output.wav'
+                if len(queue)!= 0:
+                    time.sleep(1.95)
                     # Converting a single recorded audio file into text
                     text = self.__stt.convert_recorded_audio(file_name[0])
                     lemmatized_text = self.__stt.lemmatize(text)
@@ -27,4 +28,8 @@ class SpeechToSign:
                 continue
             except TypeError:
                 continue
+            except FileNotFoundError:
+                file_name = wave.open('output.wav', 'w') 
+            except RequestError:
+                print('check internet connection...')
 
