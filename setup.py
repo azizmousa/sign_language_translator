@@ -16,7 +16,7 @@ with open("README.md", "r") as readme:
  
 
 setup(
-  name = 'sts',
+  name = 'stos',
   version = '1.0.0',
   
   description = 'Converting the American sign language into speech or text, and vice versa.',
