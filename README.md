@@ -24,7 +24,7 @@ This pipeline controls the translation process of the streamed speech into Ameri
 
 
 # Work Flow
-![Project Flowchart] (images/flow_chart.png)
+<p align="center"><img src="images/flow_chart.png" width="800"\></p>
 
 # Prerequisites
 - python 3.8
