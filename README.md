@@ -32,15 +32,17 @@ This pipeline controls the translation process of the streamed speech into Ameri
 
 # Installation
 ```bash
-pip install sts
+pip install stos
 ```
 
 # How to use
 #### **To Convert Sign to Speech**
+
 ```python
 import os
 from cv2 import cv2
-from sts.sign_to_speech.sign_to_speech import SignToSpeech
+from stos.sign_to_speech.sign_to_speech import SignToSpeech
+
 sts = SignToSpeech(1, 20, os.path.join('model', 'cv_model.hdf5'), os.path.join('model', 'names'),
                    display_keypoint=True, display_window=False)
 for word, frame in sts.start_pipeline():
@@ -51,9 +53,11 @@ for word, frame in sts.start_pipeline():
 ```
 
 #### **To Convert Speech to Sign**
+
 ```python
 from cv2 import cv2
-from sts.speech_to_sign.speech_to_sign import SpeechToSign
+from stos.speech_to_sign.speech_to_sign import SpeechToSign
+
 sts = SpeechToSign(10)
 for frame in sts.start_pipeline():
     cv2.imshow('frame', frame)

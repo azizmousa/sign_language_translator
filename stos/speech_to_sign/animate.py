@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import pandas as pd
 from zipfile import ZipFile
-from sts.sign_to_speech.model_prepare import download_file
+from stos.sign_to_speech.model_prepare import download_file
 
 
 class Animate:
