@@ -1,9 +1,9 @@
 import os
 import threading
-from sts.sign_to_speech import model_prepare
-from sts.sign_to_speech.model import Model
-from sts.sign_to_speech.speak import Speak
-from sts.sign_to_speech.parser import Parser
+from stos.sign_to_speech import model_prepare
+from stos.sign_to_speech.model import Model
+from stos.sign_to_speech.speak import Speak
+from stos.sign_to_speech.parser import Parser
 
 
 class SignToSpeech:

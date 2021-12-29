@@ -1,7 +1,7 @@
 import wavio as wv
-from sts.speech_to_sign.audio_recording import RecordingThread
-from sts.speech_to_sign.speech_to_text import SpeechToText
-from sts.speech_to_sign.animate import Animate
+from stos.speech_to_sign.audio_recording import RecordingThread
+from stos.speech_to_sign.speech_to_text import SpeechToText
+from stos.speech_to_sign.animate import Animate
 
 
 class SpeechToSign:

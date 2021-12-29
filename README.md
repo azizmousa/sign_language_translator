@@ -1,15 +1,17 @@
-# **Sign to speech (STS):**
+# **Sign to speech (StoS):**
 Converting the American sign language into speech, and vice versa.
 
 # **Project Description:**
-STS is a python library, created by a team from the Egyptian information technology institute (ITI) as their graduation project.
+StoS is a python library, created by a team from the Egyptian information technology institute (ITI) as their graduation project.
 
 The main purpose of the library is converting the American sign language to speech, and vice versa, this is achieved by using deep learning, NLP, and computer vision. The first release of the project is limited only to the following 50 common English word:
 ```
-[age, book, call, car, day, Egypt, English, enjoy, every, excuse, football, forget, fun, good, hate, have, hello, help, holiday, I, am, love, meet, month, morning, my, NA, name, nice, no, not, number, okay, picture, play, read, ride, run, sorry, speak, sport, take, thanks, time, today, understand, what, when, where, year, yes, you, your]
+[age, book, call, car, day, Egypt, English, enjoy, every, excuse, football, forget, fun, good, hate, have, hello, help, 
+holiday, I, am, love, meet, month, morning, my, NA, name, nice, no, not, number, okay, picture, play, read, ride, run, 
+sorry, speak, sport, take, thanks, time, today, understand, what, when, where, year, yes, you, your]
 ```
 
-## **STS is divided into two main pipelines:**
+## **StoS is divided into two main pipelines:**
 >## **1. sign to speech:**
 >
 In sign to speech pipeline, the primary role is converting the streamed American sign language videos into a set of sentences, or voice, using NLP pipeline, after being predicated by our DL model.
@@ -32,15 +34,17 @@ This pipeline controls the translation process of the streamed speech into Ameri
 
 # Installation
 ```bash
-pip install sts
+pip install stos
 ```
 
 # How to use
 #### **To Convert Sign to Speech**
+
 ```python
 import os
 from cv2 import cv2
-from sts.sign_to_speech.sign_to_speech import SignToSpeech
+from stos.sign_to_speech.sign_to_speech import SignToSpeech
+
 sts = SignToSpeech(1, 20, os.path.join('model', 'cv_model.hdf5'), os.path.join('model', 'names'),
                    display_keypoint=True, display_window=False)
 for word, frame in sts.start_pipeline():
@@ -51,9 +55,11 @@ for word, frame in sts.start_pipeline():
 ```
 
 #### **To Convert Speech to Sign**
+
 ```python
 from cv2 import cv2
-from sts.speech_to_sign.speech_to_sign import SpeechToSign
+from stos.speech_to_sign.speech_to_sign import SpeechToSign
+
 sts = SpeechToSign(10)
 for frame in sts.start_pipeline():
     cv2.imshow('frame', frame)
