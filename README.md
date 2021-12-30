@@ -28,6 +28,13 @@ This pipeline controls the translation process of the streamed speech into Ameri
 # Work Flow
 <p align="center"><img src="images/flow_chart.png" width="800"\></p>
 
+# Model Structure
+<p align="center"><img src="images/model.png" width="800"\></p>
+
+# Training Result
+<p align="center"><img src="images/training_acc.png" width="800"\></p>
+<p align="center"><img src="images/training_loss.png" width="800"\></p>
+
 # Prerequisites
 - python 3.8
 - OpenCV
