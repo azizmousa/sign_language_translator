@@ -38,6 +38,7 @@ This pipeline controls the translation process of the streamed speech into Ameri
 # Prerequisites
 - python 3.8
 - OpenCV
+- for linux check of portaudio library installation
 
 # Installation
 ```bash
